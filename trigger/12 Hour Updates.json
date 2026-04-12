@@ -1,0 +1,33 @@
+{
+	"name": "12 Hour Updates",
+	"properties": {
+		"description": "Keyrsla sem afritar á 12 tíma fresti",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "CopyFromCompass2",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"FolderPath_Source": "TrendLog",
+					"Directory_Source": "Data",
+					"FolderPath_Destination": "embla",
+					"Directory_Destination": "Compass2TrendlogsLive",
+					"LastModified_From": "2019-03-01T00:00:00Z",
+					"LastModified_To": "2029-03-01T00:00:00Z"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 12,
+				"startTime": "2026-04-01T07:20:00",
+				"timeZone": "Greenwich Standard Time"
+			}
+		}
+	}
+}

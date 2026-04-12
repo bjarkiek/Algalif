@@ -1,0 +1,18 @@
+{
+	"name": "Assa Connection",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Assa is running IR",
+		"annotations": [],
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "\\\\COMPASS\\Trendlog",
+			"userId": "compass\\cpc",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI4YWMwMDJkZC03ZTYwLTRhZmQtYWU5Yy01NWU0NDc2MTc1ZWEiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "AssaIntegratedRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

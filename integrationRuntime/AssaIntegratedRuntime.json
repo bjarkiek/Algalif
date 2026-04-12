@@ -1,0 +1,6 @@
+{
+	"name": "AssaIntegratedRuntime",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}

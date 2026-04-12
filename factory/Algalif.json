@@ -1,0 +1,9 @@
+{
+	"name": "Algalif",
+	"location": "northeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "e534119d-628f-4820-beb3-3474a3501b9f",
+		"tenantId": "60ae6057-4b2f-4117-b377-8cd6af77fe07"
+	}
+}
