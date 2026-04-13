@@ -2,13 +2,13 @@
 	"name": "LocalTempStorage",
 	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
-		"description": "Local temp folder on the self-hosted IR machine for staging .mdb files",
+		"description": "Local temp folder on the self-hosted IR machine for staging .mdb files\nOliprik01",
 		"annotations": [],
 		"type": "FileServer",
 		"typeProperties": {
-			"host": "C:\\AdfTemp",
+			"host": "\\\\Assa\\C$\\AdfTemp",
 			"userId": "Algalif.local\\administrator",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI1ZDM3ZTBkZi1iYTQyLTQzODAtYmZmYi02N2I0MWJlMWJhZTYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIwNWRjNTY2Yi1hNTM5LTRhOWMtOWExNS0wNDQyNGRmNGVkZjEiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "AssaIntegratedRuntime",
