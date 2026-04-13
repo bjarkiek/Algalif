@@ -6,9 +6,9 @@
 		"annotations": [],
 		"type": "FileServer",
 		"typeProperties": {
-			"host": "\\\\Embla\\C$\\AdfTemp",
+			"host": "\\\\Embla\\C$",
 			"userId": "Administrator",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI0NzUzMDU2MS04MmQyLTRmNTktODc4Yi1mYmI5N2Y5YjM2YzgiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIyNjJjNjI5MC0yNzdmLTRhYWEtYWNiYy02MzVkZmVkYzgyOGUiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "AssaIntegratedRuntime",
