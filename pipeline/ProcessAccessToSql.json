@@ -38,6 +38,9 @@
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
 						"recursive": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
 					}
 				}
 			},
