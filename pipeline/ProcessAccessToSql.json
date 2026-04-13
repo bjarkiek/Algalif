@@ -90,7 +90,7 @@
 					"activities": [
 						{
 							"name": "CopyTrendlogToSql",
-							"description": "Copy tblTrendlog data from Access to Azure SQL Trendlog table. Table name is derived from filename: Trendlog_X.mdb -> tblTrendlog_X",
+							"description": "Copy tblTrendlog data from Access to Azure SQL Trendlog table",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -107,16 +107,7 @@
 									"query": {
 										"value": "@concat('SELECT * FROM [tbl', replace(item().name, '.mdb', ''), ']')",
 										"type": "Expression"
-									},
-									"additionalColumns": [
-										{
-											"name": "FileName",
-											"value": {
-												"value": "@item().name",
-												"type": "Expression"
-											}
-										}
-									]
+									}
 								},
 								"sink": {
 									"type": "AzureSqlSink",
@@ -148,6 +139,42 @@
 									"type": "DatasetReference"
 								}
 							]
+						},
+						{
+							"name": "UpdateFileName",
+							"description": "Set FileName for rows just inserted (where FileName is still NULL)",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "CopyTrendlogToSql",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.00:10:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "NonQuery",
+										"text": {
+											"value": "@concat('UPDATE dbo.Trendlog SET FileName = ''', item().name, ''' WHERE FileName IS NULL')",
+											"type": "Expression"
+										}
+									}
+								]
+							}
 						}
 					]
 				}
