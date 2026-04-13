@@ -1,0 +1,645 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "Algalif"
+		},
+		"AlalifBlobService_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AlalifBlobService'"
+		},
+		"Compass2_LiveData_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Compass2_LiveData'"
+		},
+		"Assa Connection_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Assa Connection'"
+		},
+		"Compass2_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Compass2'"
+		},
+		"Compass2_LiveData_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "\\\\embla\\c$\\Alerton\\Compass\\2.0\\ALGAC\\ALGAC\\TrendlogData"
+		},
+		"Compass2_LiveData_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "Administrator"
+		},
+		"Assa Connection_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "\\\\COMPASS\\Trendlog"
+		},
+		"Assa Connection_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "compass\\cpc"
+		},
+		"Compass2_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "\\\\Embla\\F$\\Trend"
+		},
+		"Compass2_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "Administrator"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_FolderPath_Source": {
+			"type": "string",
+			"defaultValue": "TrendLog"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_Directory_Source": {
+			"type": "string",
+			"defaultValue": "Data"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_FolderPath_Destination": {
+			"type": "string",
+			"defaultValue": "embla"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_Directory_Destination": {
+			"type": "string",
+			"defaultValue": "Compass2TrendlogsLive"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_LastModified_From": {
+			"type": "string",
+			"defaultValue": "2019-03-01T00:00:00Z"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_LastModified_To": {
+			"type": "string",
+			"defaultValue": "2029-03-01T00:00:00Z"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AlalifBlobService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AlalifBlobService_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AssaIntegratedRuntime')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Compass2_LiveData')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('Compass2_LiveData_properties_typeProperties_host')]",
+					"userId": "[parameters('Compass2_LiveData_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('Compass2_LiveData_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BinaryDataDestinationStore')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Connection to your data destination store.  ",
+				"linkedServiceName": {
+					"referenceName": "AlalifBlobService",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Container": {
+						"type": "string"
+					},
+					"Directory": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "@dataset().Directory",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().Container",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AlalifBlobService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Assa Connection')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Assa is running IR",
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('Assa Connection_properties_typeProperties_host')]",
+					"userId": "[parameters('Assa Connection_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('Assa Connection_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AssaIntegratedRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/AssaIntegratedRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Compass2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('Compass2_properties_typeProperties_host')]",
+					"userId": "[parameters('Compass2_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('Compass2_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AssaIntegratedRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/AssaIntegratedRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LiveDataSource')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Connection to your data source store. ",
+				"linkedServiceName": {
+					"referenceName": "Compass2_LiveData",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Compass2_LiveData')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BinaryDataSourceStore')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Connection to your data source store. ",
+				"linkedServiceName": {
+					"referenceName": "Compass2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FolderPath": {
+						"type": "string"
+					},
+					"Directory": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation",
+						"folderPath": {
+							"value": "@concat(dataset().FolderPath,'/',dataset().Directory)",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Compass2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CopyFromCompass2_LiveData')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Copy new and changed files only by using LastModifiedDate",
+				"activities": [
+					{
+						"name": "LiveData2Blob",
+						"description": "Copy Temp files from Embla-Compas2 to Blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"modifiedDatetimeStart": {
+										"value": "@{pipeline().parameters.LastModified_From}",
+										"type": "Expression"
+									},
+									"modifiedDatetimeEnd": {
+										"value": "@{pipeline().parameters.LastModified_To}",
+										"type": "Expression"
+									},
+									"wildcardFileName": "Trendlog_0002000*"
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "LiveDataSource",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "BinaryDataDestinationStore",
+								"type": "DatasetReference",
+								"parameters": {
+									"Container": {
+										"value": "@pipeline().parameters.FolderPath_Destination",
+										"type": "Expression"
+									},
+									"Directory": {
+										"value": "@pipeline().parameters.Directory_Destination",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"FolderPath_Destination": {
+						"type": "String",
+						"defaultValue": "embla"
+					},
+					"Directory_Destination": {
+						"type": "String",
+						"defaultValue": "LiveData"
+					},
+					"LastModified_From": {
+						"type": "String",
+						"defaultValue": "2019-03-01T00:00:00Z"
+					},
+					"LastModified_To": {
+						"type": "String",
+						"defaultValue": "2029-04-01T00:00:00Z"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2026-04-01T07:24:34Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/LiveDataSource')]",
+				"[concat(variables('factoryId'), '/datasets/BinaryDataDestinationStore')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CopyFromCompass2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Copy new and changed files only by using LastModifiedDate",
+				"activities": [
+					{
+						"name": "Embla2Blob",
+						"description": "Copy Temp files from Embla-Compas2 to Blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"modifiedDatetimeStart": {
+										"value": "@{pipeline().parameters.LastModified_From}",
+										"type": "Expression"
+									},
+									"modifiedDatetimeEnd": {
+										"value": "@{pipeline().parameters.LastModified_To}",
+										"type": "Expression"
+									},
+									"wildcardFileName": "Trendlog_0002000*"
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "BinaryDataSourceStore",
+								"type": "DatasetReference",
+								"parameters": {
+									"FolderPath": {
+										"value": "@pipeline().parameters.FolderPath_Source",
+										"type": "Expression"
+									},
+									"Directory": {
+										"value": "@pipeline().parameters.Directory_Source",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "BinaryDataDestinationStore",
+								"type": "DatasetReference",
+								"parameters": {
+									"Container": {
+										"value": "@pipeline().parameters.FolderPath_Destination",
+										"type": "Expression"
+									},
+									"Directory": {
+										"value": "@pipeline().parameters.Directory_Destination",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"FolderPath_Source": {
+						"type": "String",
+						"defaultValue": "Trendlog"
+					},
+					"Directory_Source": {
+						"type": "String",
+						"defaultValue": "Data"
+					},
+					"FolderPath_Destination": {
+						"type": "String",
+						"defaultValue": "embla"
+					},
+					"Directory_Destination": {
+						"type": "String",
+						"defaultValue": "Compass2TrendlogsLive"
+					},
+					"LastModified_From": {
+						"type": "String",
+						"defaultValue": "2019-03-01T00:00:00Z"
+					},
+					"LastModified_To": {
+						"type": "String",
+						"defaultValue": "2029-04-01T00:00:00Z"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2026-04-01T07:24:34Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/BinaryDataSourceStore')]",
+				"[concat(variables('factoryId'), '/datasets/BinaryDataDestinationStore')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CopyNewFilesByLastModifiedDate')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Copy new and changed files only by using LastModifiedDate",
+				"activities": [
+					{
+						"name": "CopyNewFiles",
+						"description": "Copy new and changed files only by using LastModifiedDate",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"modifiedDatetimeStart": {
+										"value": "@{pipeline().parameters.LastModified_From}",
+										"type": "Expression"
+									},
+									"modifiedDatetimeEnd": {
+										"value": "@{pipeline().parameters.LastModified_To}",
+										"type": "Expression"
+									},
+									"wildcardFileName": {
+										"value": "*",
+										"type": "Expression"
+									}
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "BinaryDataSourceStore",
+								"type": "DatasetReference",
+								"parameters": {
+									"FolderPath": {
+										"value": "@pipeline().parameters.FolderPath_Source",
+										"type": "Expression"
+									},
+									"Directory": {
+										"value": "@pipeline().parameters.Directory_Source",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "BinaryDataDestinationStore",
+								"type": "DatasetReference",
+								"parameters": {
+									"Container": {
+										"value": "@pipeline().parameters.FolderPath_Destination",
+										"type": "Expression"
+									},
+									"Directory": {
+										"value": "@pipeline().parameters.Directory_Destination",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"FolderPath_Source": {
+						"type": "String",
+						"defaultValue": "2026"
+					},
+					"Directory_Source": {
+						"type": "String",
+						"defaultValue": "feb"
+					},
+					"FolderPath_Destination": {
+						"type": "String",
+						"defaultValue": "embla"
+					},
+					"Directory_Destination": {
+						"type": "String",
+						"defaultValue": "2026"
+					},
+					"LastModified_From": {
+						"type": "String",
+						"defaultValue": "2019-02-01T00:00:00Z"
+					},
+					"LastModified_To": {
+						"type": "String",
+						"defaultValue": "2029-03-01T00:00:00Z"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2026-02-27T10:43:11Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/BinaryDataSourceStore')]",
+				"[concat(variables('factoryId'), '/datasets/BinaryDataDestinationStore')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/12 Hour Updates')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Keyrsla sem afritar á 12 tíma fresti",
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "CopyFromCompass2",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"FolderPath_Source": "[parameters('12 Hour Updates_properties_CopyFromCompass2_parameters_FolderPath_Source')]",
+							"Directory_Source": "[parameters('12 Hour Updates_properties_CopyFromCompass2_parameters_Directory_Source')]",
+							"FolderPath_Destination": "[parameters('12 Hour Updates_properties_CopyFromCompass2_parameters_FolderPath_Destination')]",
+							"Directory_Destination": "[parameters('12 Hour Updates_properties_CopyFromCompass2_parameters_Directory_Destination')]",
+							"LastModified_From": "[parameters('12 Hour Updates_properties_CopyFromCompass2_parameters_LastModified_From')]",
+							"LastModified_To": "[parameters('12 Hour Updates_properties_CopyFromCompass2_parameters_LastModified_To')]"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Hour",
+						"interval": 12,
+						"startTime": "2026-04-01T07:20:00",
+						"timeZone": "Greenwich Standard Time"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/CopyFromCompass2')]"
+			]
+		}
+	]
+}

@@ -1,0 +1,154 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "Algalif"
+		},
+		"AlalifBlobService_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AlalifBlobService'"
+		},
+		"Assa Connection_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Assa Connection'"
+		},
+		"Compass2_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Compass2'"
+		},
+		"Compass2_LiveData_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Compass2_LiveData'"
+		},
+		"Assa Connection_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "\\\\COMPASS\\Trendlog"
+		},
+		"Assa Connection_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "compass\\cpc"
+		},
+		"Compass2_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "\\\\Embla\\F$\\Trend"
+		},
+		"Compass2_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "Administrator"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_FolderPath_Source": {
+			"type": "string",
+			"defaultValue": "TrendLog"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_Directory_Source": {
+			"type": "string",
+			"defaultValue": "Data"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_FolderPath_Destination": {
+			"type": "string",
+			"defaultValue": "embla"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_Directory_Destination": {
+			"type": "string",
+			"defaultValue": "Compass2TrendlogsLive"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_LastModified_From": {
+			"type": "string",
+			"defaultValue": "2019-03-01T00:00:00Z"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_LastModified_To": {
+			"type": "string",
+			"defaultValue": "2029-03-01T00:00:00Z"
+		},
+		"Compass2_LiveData_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "\\\\embla\\c$\\Alerton\\Compass\\2.0\\ALGAC\\ALGAC\\TrendlogData"
+		},
+		"Compass2_LiveData_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "Administrator"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "Algalif_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AlalifBlobService_connectionString": {
+						"value": "[parameters('AlalifBlobService_connectionString')]"
+					},
+					"Compass2_LiveData_password": {
+						"value": "[parameters('Compass2_LiveData_password')]"
+					},
+					"Assa Connection_password": {
+						"value": "[parameters('Assa Connection_password')]"
+					},
+					"Compass2_password": {
+						"value": "[parameters('Compass2_password')]"
+					},
+					"Compass2_LiveData_properties_typeProperties_host": {
+						"value": "[parameters('Compass2_LiveData_properties_typeProperties_host')]"
+					},
+					"Compass2_LiveData_properties_typeProperties_userId": {
+						"value": "[parameters('Compass2_LiveData_properties_typeProperties_userId')]"
+					},
+					"Assa Connection_properties_typeProperties_host": {
+						"value": "[parameters('Assa Connection_properties_typeProperties_host')]"
+					},
+					"Assa Connection_properties_typeProperties_userId": {
+						"value": "[parameters('Assa Connection_properties_typeProperties_userId')]"
+					},
+					"Compass2_properties_typeProperties_host": {
+						"value": "[parameters('Compass2_properties_typeProperties_host')]"
+					},
+					"Compass2_properties_typeProperties_userId": {
+						"value": "[parameters('Compass2_properties_typeProperties_userId')]"
+					},
+					"12 Hour Updates_properties_CopyFromCompass2_parameters_FolderPath_Source": {
+						"value": "[parameters('12 Hour Updates_properties_CopyFromCompass2_parameters_FolderPath_Source')]"
+					},
+					"12 Hour Updates_properties_CopyFromCompass2_parameters_Directory_Source": {
+						"value": "[parameters('12 Hour Updates_properties_CopyFromCompass2_parameters_Directory_Source')]"
+					},
+					"12 Hour Updates_properties_CopyFromCompass2_parameters_FolderPath_Destination": {
+						"value": "[parameters('12 Hour Updates_properties_CopyFromCompass2_parameters_FolderPath_Destination')]"
+					},
+					"12 Hour Updates_properties_CopyFromCompass2_parameters_Directory_Destination": {
+						"value": "[parameters('12 Hour Updates_properties_CopyFromCompass2_parameters_Directory_Destination')]"
+					},
+					"12 Hour Updates_properties_CopyFromCompass2_parameters_LastModified_From": {
+						"value": "[parameters('12 Hour Updates_properties_CopyFromCompass2_parameters_LastModified_From')]"
+					},
+					"12 Hour Updates_properties_CopyFromCompass2_parameters_LastModified_To": {
+						"value": "[parameters('12 Hour Updates_properties_CopyFromCompass2_parameters_LastModified_To')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

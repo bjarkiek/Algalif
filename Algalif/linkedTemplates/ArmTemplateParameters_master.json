@@ -1,0 +1,63 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "Algalif"
+		},
+		"AlalifBlobService_connectionString": {
+			"value": ""
+		},
+		"Assa Connection_password": {
+			"value": ""
+		},
+		"Compass2_password": {
+			"value": ""
+		},
+		"Compass2_LiveData_password": {
+			"value": ""
+		},
+		"Assa Connection_properties_typeProperties_host": {
+			"value": "\\\\COMPASS\\Trendlog"
+		},
+		"Assa Connection_properties_typeProperties_userId": {
+			"value": "compass\\cpc"
+		},
+		"Compass2_properties_typeProperties_host": {
+			"value": "\\\\Embla\\F$\\Trend"
+		},
+		"Compass2_properties_typeProperties_userId": {
+			"value": "Administrator"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_FolderPath_Source": {
+			"value": "TrendLog"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_Directory_Source": {
+			"value": "Data"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_FolderPath_Destination": {
+			"value": "embla"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_Directory_Destination": {
+			"value": "Compass2TrendlogsLive"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_LastModified_From": {
+			"value": "2019-03-01T00:00:00Z"
+		},
+		"12 Hour Updates_properties_CopyFromCompass2_parameters_LastModified_To": {
+			"value": "2029-03-01T00:00:00Z"
+		},
+		"Compass2_LiveData_properties_typeProperties_host": {
+			"value": "\\\\embla\\c$\\Alerton\\Compass\\2.0\\ALGAC\\ALGAC\\TrendlogData"
+		},
+		"Compass2_LiveData_properties_typeProperties_userId": {
+			"value": "Administrator"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
