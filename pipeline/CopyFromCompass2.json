@@ -30,10 +30,7 @@
 								"value": "@{pipeline().parameters.LastModified_To}",
 								"type": "Expression"
 							},
-							"wildcardFileName": {
-								"value": "*",
-								"type": "Expression"
-							}
+							"wildcardFileName": "Trendlog_0002000*"
 						},
 						"formatSettings": {
 							"type": "BinaryReadSettings"
