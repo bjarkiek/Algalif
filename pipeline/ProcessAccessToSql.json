@@ -1,7 +1,7 @@
 {
 	"name": "ProcessAccessToSql",
 	"properties": {
-		"description": "Downloads .mdb files from blob, reads tblTrendlog tables via ODBC, and copies data to Azure SQL",
+		"description": "Reads .mdb files directly from Embla, finds tblTrendlog tables via ODBC, and copies data to Azure SQL",
 		"activities": [
 			{
 				"name": "GetMdbFileList",
@@ -70,7 +70,7 @@
 			},
 			{
 				"name": "ForEachMdbFile",
-				"description": "Process each .mdb file",
+				"description": "Process each .mdb file directly from Embla",
 				"type": "ForEach",
 				"dependsOn": [
 					{
@@ -89,82 +89,10 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "DownloadMdbToLocal",
-							"description": "Copy .mdb from blob to local temp folder on the IR machine",
-							"type": "Copy",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.01:00:00",
-								"retry": 1,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "BinarySource",
-									"storeSettings": {
-										"type": "AzureBlobStorageReadSettings",
-										"recursive": false
-									},
-									"formatSettings": {
-										"type": "BinaryReadSettings"
-									}
-								},
-								"sink": {
-									"type": "BinarySink",
-									"storeSettings": {
-										"type": "FileServerWriteSettings"
-									}
-								},
-								"enableStaging": false
-							},
-							"inputs": [
-								{
-									"referenceName": "BlobMdbFile",
-									"type": "DatasetReference",
-									"parameters": {
-										"Container": {
-											"value": "@pipeline().parameters.BlobContainer",
-											"type": "Expression"
-										},
-										"Directory": {
-											"value": "@pipeline().parameters.BlobDirectory",
-											"type": "Expression"
-										},
-										"FileName": {
-											"value": "@item().name",
-											"type": "Expression"
-										}
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "LocalTempMdbFile",
-									"type": "DatasetReference",
-									"parameters": {
-										"FileName": {
-											"value": "@item().name",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						},
-						{
 							"name": "LookupTrendlogTables",
 							"description": "Query MSysObjects to find tables starting with tblTrendlog",
 							"type": "Lookup",
-							"dependsOn": [
-								{
-									"activity": "DownloadMdbToLocal",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"policy": {
 								"timeout": "0.00:10:00",
 								"retry": 0,
@@ -183,7 +111,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"MdbFilePath": {
-											"value": "@concat(pipeline().parameters.LocalTempPath, '\\', item().name)",
+											"value": "@concat(pipeline().parameters.SourcePath, '\\', item().name)",
 											"type": "Expression"
 										},
 										"TableName": "MSysObjects"
@@ -247,7 +175,7 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"MdbFilePath": {
-														"value": "@concat(pipeline().parameters.LocalTempPath, '\\', item().name)",
+														"value": "@concat(pipeline().parameters.SourcePath, '\\', item().name)",
 														"type": "Expression"
 													},
 													"TableName": {
@@ -266,44 +194,6 @@
 									}
 								]
 							}
-						},
-						{
-							"name": "DeleteTempMdb",
-							"description": "Clean up the temp .mdb file from the IR machine",
-							"type": "Delete",
-							"dependsOn": [
-								{
-									"activity": "ForEachTrendlogTable",
-									"dependencyConditions": [
-										"Completed"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.00:05:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"dataset": {
-									"referenceName": "LocalTempMdbFile",
-									"type": "DatasetReference",
-									"parameters": {
-										"FileName": {
-											"value": "@item().name",
-											"type": "Expression"
-										}
-									}
-								},
-								"enableLogging": false,
-								"storeSettings": {
-									"type": "FileServerReadSettings",
-									"recursive": false
-								}
-							}
 						}
 					]
 				}
@@ -318,9 +208,9 @@
 				"type": "String",
 				"defaultValue": "Compass2TrendlogsLive"
 			},
-			"LocalTempPath": {
+			"SourcePath": {
 				"type": "String",
-				"defaultValue": "C:\\AdfTemp"
+				"defaultValue": "\\\\embla\\c$\\Alerton\\Compass\\2.0\\ALGAC\\ALGAC\\TrendlogData"
 			}
 		},
 		"annotations": [],
