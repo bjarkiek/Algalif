@@ -30,7 +30,8 @@
 								"value": "@{pipeline().parameters.LastModified_To}",
 								"type": "Expression"
 							},
-							"wildcardFileName": "Trendlog_0002000*"
+							"wildcardFileName": "Trendlog_0002000*.mdb",
+							"deleteFilesAfterCompletion": false
 						},
 						"formatSettings": {
 							"type": "BinaryReadSettings"
