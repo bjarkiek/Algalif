@@ -6,9 +6,9 @@
 		"annotations": [],
 		"type": "FileServer",
 		"typeProperties": {
-			"host": "c:\\",
+			"host": "\\\\localhost\\",
 			"userId": "Algalif.local\\administrator",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIzYTgxMzllYi0wNzcwLTQ0MDAtYWZhZS1jMjhiZGI0ZWJiNzYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI2M2JlMWJjOS1iMDgxLTRiOTgtOTMyNS0yZmU3MjhkZmYzYTgiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "AssaIntegratedRuntime",
