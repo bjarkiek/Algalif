@@ -1,7 +1,7 @@
 {
 	"name": "ProcessAccessToSql",
 	"properties": {
-		"description": "Reads .mdb files directly from Embla, finds tblTrendlog tables via ODBC, and copies data to Azure SQL",
+		"description": "Reads .mdb files directly from Embla, derives tblTrendlog table name from filename, and copies data to Azure SQL",
 		"activities": [
 			{
 				"name": "GetMdbFileList",
@@ -89,13 +89,13 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "LookupTrendlogTables",
-							"description": "Query MSysObjects to find tables starting with tblTrendlog",
-							"type": "Lookup",
+							"name": "CopyTrendlogToSql",
+							"description": "Copy tblTrendlog data from Access to Azure SQL Trendlog table. Table name is derived from filename: Trendlog_X.mdb -> tblTrendlog_X",
+							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
-								"timeout": "0.00:10:00",
-								"retry": 0,
+								"timeout": "0.02:00:00",
+								"retry": 1,
 								"retryIntervalInSeconds": 30,
 								"secureOutput": false,
 								"secureInput": false
@@ -104,9 +104,21 @@
 							"typeProperties": {
 								"source": {
 									"type": "OdbcSource",
-									"query": "SELECT [Name] FROM [MSysObjects] WHERE [Type]=1 AND [Flags]=0 AND [Name] LIKE 'tblTrendlog%'"
+									"query": {
+										"value": "@concat('SELECT * FROM [tbl', replace(item().name, '.mdb', ''), ']')",
+										"type": "Expression"
+									}
 								},
-								"dataset": {
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false,
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
 									"referenceName": "AccessTrendlogTable",
 									"type": "DatasetReference",
 									"parameters": {
@@ -114,86 +126,19 @@
 											"value": "@concat(pipeline().parameters.SourcePath, '\\', item().name)",
 											"type": "Expression"
 										},
-										"TableName": "MSysObjects"
+										"TableName": {
+											"value": "@concat('tbl', replace(item().name, '.mdb', ''))",
+											"type": "Expression"
+										}
 									}
-								},
-								"firstRowOnly": false
-							}
-						},
-						{
-							"name": "ForEachTrendlogTable",
-							"description": "Copy each tblTrendlog table to Azure SQL",
-							"type": "ForEach",
-							"dependsOn": [
-								{
-									"activity": "LookupTrendlogTables",
-									"dependencyConditions": [
-										"Succeeded"
-									]
 								}
 							],
-							"userProperties": [],
-							"typeProperties": {
-								"items": {
-									"value": "@activity('LookupTrendlogTables').output.value",
-									"type": "Expression"
-								},
-								"isSequential": false,
-								"activities": [
-									{
-										"name": "CopyTrendlogToSql",
-										"description": "Copy tblTrendlog data from Access to Azure SQL Trendlog table",
-										"type": "Copy",
-										"dependsOn": [],
-										"policy": {
-											"timeout": "0.02:00:00",
-											"retry": 1,
-											"retryIntervalInSeconds": 30,
-											"secureOutput": false,
-											"secureInput": false
-										},
-										"userProperties": [],
-										"typeProperties": {
-											"source": {
-												"type": "OdbcSource",
-												"query": {
-													"value": "@concat('SELECT * FROM [', item().Name, ']')",
-													"type": "Expression"
-												}
-											},
-											"sink": {
-												"type": "AzureSqlSink",
-												"writeBehavior": "insert",
-												"sqlWriterUseTableLock": false,
-												"disableMetricsCollection": false
-											},
-											"enableStaging": false
-										},
-										"inputs": [
-											{
-												"referenceName": "AccessTrendlogTable",
-												"type": "DatasetReference",
-												"parameters": {
-													"MdbFilePath": {
-														"value": "@concat(pipeline().parameters.SourcePath, '\\', item().name)",
-														"type": "Expression"
-													},
-													"TableName": {
-														"value": "@item().Name",
-														"type": "Expression"
-													}
-												}
-											}
-										],
-										"outputs": [
-											{
-												"referenceName": "AzureSqlTrendlog",
-												"type": "DatasetReference"
-											}
-										]
-									}
-								]
-							}
+							"outputs": [
+								{
+									"referenceName": "AzureSqlTrendlog",
+									"type": "DatasetReference"
+								}
+							]
 						}
 					]
 				}
