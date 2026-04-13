@@ -6,14 +6,6 @@
 			"referenceName": "Compass2_LiveData",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"FolderPath": {
-				"type": "string"
-			},
-			"Directory": {
-				"type": "string"
-			}
-		},
 		"annotations": [],
 		"type": "Binary",
 		"typeProperties": {
