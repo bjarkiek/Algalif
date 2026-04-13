@@ -1,0 +1,16 @@
+{
+	"name": "LocalTempStorage",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Local temp folder on the self-hosted IR machine for staging .mdb files",
+		"annotations": [],
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "C:\\AdfTemp"
+		},
+		"connectVia": {
+			"referenceName": "AssaIntegratedRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

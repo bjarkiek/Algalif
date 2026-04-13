@@ -1,0 +1,17 @@
+{
+	"name": "AzureSqlTrendlog",
+	"properties": {
+		"description": "Azure SQL destination table for trendlog data",
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Trendlog"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

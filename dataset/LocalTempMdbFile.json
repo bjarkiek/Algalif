@@ -1,0 +1,27 @@
+{
+	"name": "LocalTempMdbFile",
+	"properties": {
+		"description": "Local temp file on the IR machine for staging .mdb files",
+		"linkedServiceName": {
+			"referenceName": "LocalTempStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"FileName": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation",
+				"fileName": {
+					"value": "@dataset().FileName",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

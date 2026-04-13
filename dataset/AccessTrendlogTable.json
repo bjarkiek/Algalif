@@ -1,0 +1,33 @@
+{
+	"name": "AccessTrendlogTable",
+	"properties": {
+		"description": "ODBC dataset for reading tblTrendlog tables from Access .mdb files",
+		"linkedServiceName": {
+			"referenceName": "AccessOdbc",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"MdbFilePath": {
+					"value": "@dataset().MdbFilePath",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"MdbFilePath": {
+				"type": "String"
+			},
+			"TableName": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "OdbcTable",
+		"typeProperties": {
+			"tableName": {
+				"value": "@dataset().TableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

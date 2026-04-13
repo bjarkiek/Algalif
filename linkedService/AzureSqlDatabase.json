@@ -1,0 +1,12 @@
+{
+	"name": "AzureSqlDatabase",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Azure SQL Database for Trendlog data",
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "Server=tcp:<your-server>.database.windows.net,1433;Database=<your-database>;User ID=<your-user>;Password=<your-password>;Encrypt=true;Connection Timeout=30;"
+		}
+	}
+}

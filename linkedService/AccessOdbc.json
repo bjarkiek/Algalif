@@ -1,0 +1,25 @@
+{
+	"name": "AccessOdbc",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Parameterized ODBC connection to Access .mdb files on the IR machine",
+		"annotations": [],
+		"type": "Odbc",
+		"parameters": {
+			"MdbFilePath": {
+				"type": "String"
+			}
+		},
+		"typeProperties": {
+			"connectionString": {
+				"value": "Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq=@{linkedService().MdbFilePath}",
+				"type": "Expression"
+			},
+			"authenticationType": "Anonymous"
+		},
+		"connectVia": {
+			"referenceName": "AssaIntegratedRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
