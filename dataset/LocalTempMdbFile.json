@@ -19,7 +19,8 @@
 				"fileName": {
 					"value": "@dataset().FileName",
 					"type": "Expression"
-				}
+				},
+				"folderPath": "AdfTemp"
 			}
 		}
 	},
