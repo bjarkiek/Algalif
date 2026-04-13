@@ -18,11 +18,7 @@
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
-				"type": "FileServerLocation",
-				"folderPath": {
-					"value": "@concat(dataset().FolderPath,'/',dataset().Directory)",
-					"type": "Expression"
-				}
+				"type": "FileServerLocation"
 			}
 		}
 	},
