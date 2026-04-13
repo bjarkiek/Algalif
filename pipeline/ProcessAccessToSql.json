@@ -105,7 +105,7 @@
 								"source": {
 									"type": "OdbcSource",
 									"query": {
-										"value": "@concat('SELECT * FROM [tbl', replace(item().name, '.mdb', ''), ']')",
+										"value": "@concat('SELECT *, ''', item().name, ''' AS FileName FROM [tbl', replace(item().name, '.mdb', ''), ']')",
 										"type": "Expression"
 									}
 								},
