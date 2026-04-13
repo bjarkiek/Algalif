@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Access Database Integration Challenges</title>
+    <style>
+        @media print {
+            body { margin: 0; }
+        }
+        body {
+            font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #222;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        h1 {
+            font-size: 22px;
+            border-bottom: 2px solid #0078d4;
+            padding-bottom: 8px;
+            color: #0078d4;
+        }
+        h2 {
+            font-size: 17px;
+            margin-top: 28px;
+            color: #333;
+        }
+        h3 {
+            font-size: 15px;
+            margin-top: 20px;
+            color: #444;
+        }
+        p { margin: 6px 0; }
+        strong { color: #111; }
+        code {
+            background: #f0f0f0;
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-size: 13px;
+        }
+        ul { margin: 6px 0; padding-left: 24px; }
+        li { margin: 4px 0; }
+        .error { color: #c00; }
+        .resolution { color: #0a7; }
+    </style>
+</head>
+<body>
+
+<h1>Access Database (.mdb) Integration Challenges</h1>
+
+<h2>Overview</h2>
+<p>Integrating on-premises Microsoft Access .mdb files with Azure Data Factory via ODBC proved significantly more complex than anticipated due to driver compatibility, security restrictions, and ADF architectural constraints.</p>
+
+<h2>Timeline of Issues &amp; Resolutions</h2>
+
+<h3>1. ODBC Driver Not Installed</h3>
+<p><strong class="error">Error:</strong> <code>General error Unable to open registry key Temporary (volatile) Ace DSN</code></p>
+<p><strong>Cause:</strong> The Microsoft Access Database Engine was not installed on the self-hosted Integration Runtime (IR) machine.</p>
+<p><strong class="resolution">Resolution:</strong> Installed the 64-bit Microsoft Access Database Engine on the Assa machine (where the IR runs).</p>
+
+<h3>2. Driver Bitness Mismatch</h3>
+<p><strong class="error">Error:</strong> Same volatile Ace DSN registry error persisted after driver install.</p>
+<p><strong>Cause:</strong> Multiple 32-bit Access ODBC drivers were present alongside the 64-bit one. Needed to confirm the 64-bit driver <code>Microsoft Access Driver (*.mdb, *.accdb)</code> was available, matching the 64-bit IR.</p>
+<p><strong class="resolution">Resolution:</strong> Verified correct 64-bit driver was registered via <code>Get-OdbcDriver</code>.</p>
+
+<h3>3. IR Service Account Cannot Use ODBC (Volatile Registry Key)</h3>
+<p><strong class="error">Error:</strong> <code>Unable to open registry key Temporary (volatile) Ace DSN for process ... Jet</code></p>
+<p><strong>Cause:</strong> The IR service (DIAHostService) was running as LocalSystem, which lacks a HKEY_CURRENT_USER registry hive. The Access ODBC driver requires a user profile to create temporary volatile DSN entries.</p>
+<p><strong class="resolution">Resolution:</strong> Changed the IR service to run under the Administrator account via <code>services.msc</code> &rarr; Log On tab. The Administrator account has a proper user profile and HKCU hive.</p>
+
+<h3>4. ADF Blocks Loopback/Self-Referencing Connections</h3>
+<p><strong class="error">Error:</strong> <code>Access to localhost is denied</code> / <code>Access to 127.0.0.1 is denied</code> / <code>Access to assa is denied</code></p>
+<p><strong>Cause:</strong> We needed to stage .mdb files locally on the IR machine (Assa) for ODBC to read them. ADF's security validation blocks the IR from connecting back to itself via FileServer linked services &mdash; whether using <code>localhost</code>, <code>127.0.0.1</code>, or the machine's own hostname. This is by design.</p>
+<p><strong class="resolution">Resolution:</strong> Abandoned the download-to-local approach entirely. Instead, the pipeline reads .mdb files directly from their original source location on the Embla file server (<code>\\embla\c$\Alerton\Compass\2.0\ALGAC\ALGAC\TrendlogData</code>) via UNC path through the ODBC connection. The Assa IR can already reach Embla over the network.</p>
+
+<h3>5. MSysObjects Permission Denied</h3>
+<p><strong class="error">Error:</strong> <code>Record(s) cannot be read; no read permission on 'MSysObjects'</code></p>
+<p><strong>Cause:</strong> The pipeline used a Lookup activity querying <code>MSysObjects</code> (Access system table) to discover table names starting with <code>tblTrendlog</code>. Access restricts read permissions on system tables by default.</p>
+<p><strong class="resolution">Resolution:</strong> Eliminated the MSysObjects lookup entirely. Since the table name follows a predictable pattern &mdash; filename <code>Trendlog_0002000_0000000128.mdb</code> always contains table <code>tblTrendlog_0002000_0000000128</code> &mdash; the pipeline now derives the table name from the filename using the expression <code>@concat('tbl', replace(item().name, '.mdb', ''))</code>.</p>
+
+<h3>6. Publish Failures</h3>
+<p><strong class="error">Error:</strong> <code>At least one resource deployment operation failed</code> and 404 on <code>arm-template-parameters-definition.json</code></p>
+<p><strong>Cause:</strong> ADF publish requires an <code>arm-template-parameters-definition.json</code> file in the Git repo. This file was missing.</p>
+<p><strong class="resolution">Resolution:</strong> Created the file with a minimal valid ARM parameters schema.</p>
+
+<h2>Key Learnings</h2>
+<ul>
+    <li>ADF's ODBC connector with Microsoft Access is not a well-supported path &mdash; most documentation assumes SQL Server, Oracle, or other enterprise databases.</li>
+    <li>The self-hosted IR's service account needs a full user profile for Access ODBC to work.</li>
+    <li>ADF intentionally prevents the IR from connecting to itself, making local file staging impossible without workarounds.</li>
+    <li>Where possible, avoid querying Access system tables (MSysObjects) &mdash; derive metadata from naming conventions instead.</li>
+</ul>
+
+</body>
+</html>
