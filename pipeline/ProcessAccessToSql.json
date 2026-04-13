@@ -105,9 +105,18 @@
 								"source": {
 									"type": "OdbcSource",
 									"query": {
-										"value": "@concat('SELECT *, ''', item().name, ''' AS FileName FROM [tbl', replace(item().name, '.mdb', ''), ']')",
+										"value": "@concat('SELECT * FROM [tbl', replace(item().name, '.mdb', ''), ']')",
 										"type": "Expression"
-									}
+									},
+									"additionalColumns": [
+										{
+											"name": "FileName",
+											"value": {
+												"value": "@item().name",
+												"type": "Expression"
+											}
+										}
+									]
 								},
 								"sink": {
 									"type": "AzureSqlSink",
