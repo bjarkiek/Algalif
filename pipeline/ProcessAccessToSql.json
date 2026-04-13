@@ -206,7 +206,7 @@
 			},
 			"BlobDirectory": {
 				"type": "String",
-				"defaultValue": "Compass2TrendlogsLive"
+				"defaultValue": "LiveData"
 			},
 			"SourcePath": {
 				"type": "String",
