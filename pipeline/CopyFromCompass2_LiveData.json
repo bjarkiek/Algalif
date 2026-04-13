@@ -69,12 +69,6 @@
 			}
 		],
 		"parameters": {
-			"FolderPath_Source": {
-				"type": "String"
-			},
-			"Directory_Source": {
-				"type": "String"
-			},
 			"FolderPath_Destination": {
 				"type": "String",
 				"defaultValue": "embla"
