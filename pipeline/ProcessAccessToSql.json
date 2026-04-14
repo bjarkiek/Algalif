@@ -94,9 +94,9 @@
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
-								"timeout": "0.02:00:00",
-								"retry": 1,
-								"retryIntervalInSeconds": 30,
+								"timeout": "0.00:01:00",
+								"retry": 2,
+								"retryIntervalInSeconds": 10,
 								"secureOutput": false,
 								"secureInput": false
 							},
@@ -175,6 +175,31 @@
 									}
 								]
 							}
+						},
+						{
+							"name": "LogFailure",
+							"description": "Handles copy failure so the ForEach continues to the next file",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "CopyTrendlogToSql",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "LastFailedFile",
+								"value": {
+									"value": "@item().name",
+									"type": "Expression"
+								}
+							}
 						}
 					]
 				}
@@ -194,8 +219,14 @@
 				"defaultValue": "\\\\embla\\c$\\Alerton\\Compass\\2.0\\ALGAC\\ALGAC\\TrendlogData"
 			}
 		},
+		"variables": {
+			"LastFailedFile": {
+				"type": "String",
+				"defaultValue": ""
+			}
+		},
 		"annotations": [],
-		"lastPublishTime": "2026-04-13T00:00:00Z"
+		"lastPublishTime": "2026-04-14T00:00:00Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }
