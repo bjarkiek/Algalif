@@ -94,7 +94,7 @@
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
-								"timeout": "0.00:01:00",
+								"timeout": "0.00:04:00",
 								"retry": 2,
 								"retryIntervalInSeconds": 10,
 								"secureOutput": false,
