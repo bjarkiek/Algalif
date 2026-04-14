@@ -8,7 +8,7 @@
 		"typeProperties": {
 			"host": "\\\\Embla\\C$",
 			"userId": "Administrator",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI0YmEyNGYxNy03MDAxLTQxOWUtYWQ0My0yMTE1MTRmMGQwMzkiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIxZjMzNTMxNS0xOGI5LTQzNzktYTM3OC1mNTRlYTM0MzY2OTMiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "AssaIntegratedRuntime",
