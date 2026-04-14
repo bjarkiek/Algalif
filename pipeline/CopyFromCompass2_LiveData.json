@@ -30,8 +30,7 @@
 								"value": "@{pipeline().parameters.LastModified_To}",
 								"type": "Expression"
 							},
-							"wildcardFileName": "Trendlog_0002000*.mdb",
-							"deleteFilesAfterCompletion": false
+							"wildcardFileName": "Trendlog_0002000*.mdb"
 						},
 						"formatSettings": {
 							"type": "BinaryReadSettings"
@@ -45,6 +44,12 @@
 					},
 					"enableStaging": false
 				},
+				"inputs": [
+					{
+						"referenceName": "TrendLogLive",
+						"type": "DatasetReference"
+					}
+				],
 				"outputs": [
 					{
 						"referenceName": "BinaryDataDestinationStore",
