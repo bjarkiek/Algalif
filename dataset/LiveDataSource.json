@@ -1,0 +1,19 @@
+{
+	"name": "LiveDataSource",
+	"properties": {
+		"description": "Connection to your data source store. ",
+		"linkedServiceName": {
+			"referenceName": "Compass2_LiveData",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation",
+				"folderPath": "Alerton/Compass/2.0/ALGAC/ALGAC/TrendlogData"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
