@@ -45,12 +45,6 @@
 					},
 					"enableStaging": false
 				},
-				"inputs": [
-					{
-						"referenceName": "LiveDataSource",
-						"type": "DatasetReference"
-					}
-				],
 				"outputs": [
 					{
 						"referenceName": "BinaryDataDestinationStore",
